@@ -100,6 +100,7 @@ jobs:
           echo "RUN dd if=/dev/urandom of=layer bs=1024KB count=500" >> Dockerfile
           echo "RUN dd if=/dev/urandom of=layer bs=1024KB count=500" >> Dockerfile
           echo "RUN dd if=/dev/urandom of=layer bs=1024KB count=500" >> Dockerfile
+          
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
