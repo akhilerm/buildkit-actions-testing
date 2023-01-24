@@ -109,3 +109,21 @@ jobs:
         run: |
           make binaries GO_BUILD_FLAGS="-mod=vendor" GO_BUILDTAGS="no_btrfs"
           sudo -E PATH=$PATH make install
+
+      - name: Pull and push image
+        shell: bash
+        run: |
+          sudo containerd -l debug & > /tmp/containerd.out
+          containerd_pid=$!
+          sleep 5
+
+          mirror="ghcr.io/akhilerm/buildkit-actions-testing:${{ matrix.id }}"
+
+
+          echo "Mirroring "
+
+          sudo ctr content fetch --all-platforms quay.io/akhilerm/test:${{ matrix.id }}
+          sudo ctr images ls
+          sudo ctr --debug images push -u akhilerm:${{ secrets.GITHUB_TOKEN }} ${mirror} quay.io/akhilerm/test:${{ matrix.id }}
+
+          sudo kill $containerd_pid
