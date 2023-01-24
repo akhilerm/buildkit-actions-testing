@@ -49,33 +49,6 @@ jobs:
         with:
           go-version: "1.19.5"
 
-      - uses: actions/checkout@v3
-        with:
-          repository: akhilerm/containerd
-          ref: #add commit here
-          path: src/github.com/containerd/containerd
-
-      - name: Set env
-        shell: bash
-        run: |
-          echo "GOPATH=${{ github.workspace }}" >> $GITHUB_ENV
-          echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
-
-      - name: Install containerd dependencies
-        env:
-          GOFLAGS: -modcacherw
-        run: |
-          sudo apt-get install -y gperf
-          sudo -E PATH=$PATH script/setup/install-seccomp
-
-      - name: Install containerd
-        env:
-          CGO_ENABLED: 1
-        run: |
-          make binaries GO_BUILD_FLAGS="-mod=vendor" GO_BUILDTAGS="no_btrfs"
-          sudo -E PATH=$PATH make install
-
-
       - name: Login to Quay
         uses: docker/login-action@v1
         with:
@@ -109,3 +82,29 @@ jobs:
           context: .
           outputs: type=registry,dest=quay.io/akhilerm/test:5g,push=true,compression=uncompressed
           tags: quay.io/akhilerm/test:${{ matrix.id }}
+
+      - uses: actions/checkout@v3
+        with:
+          repository: containerd/containerd
+#          ref: #add commit here
+          path: src/github.com/containerd/containerd
+
+      - name: Set env
+        shell: bash
+        run: |
+          echo "GOPATH=${{ github.workspace }}" >> $GITHUB_ENV
+          echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
+
+      - name: Install containerd dependencies
+        env:
+          GOFLAGS: -modcacherw
+        run: |
+          sudo apt-get install -y gperf
+          sudo -E PATH=$PATH script/setup/install-seccomp
+
+      - name: Install containerd
+        env:
+          CGO_ENABLED: 1
+        run: |
+          make binaries GO_BUILD_FLAGS="-mod=vendor" GO_BUILDTAGS="no_btrfs"
+          sudo -E PATH=$PATH make install
