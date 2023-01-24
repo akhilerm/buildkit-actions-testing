@@ -86,6 +86,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
+          file: src/github.com/containerd/containerd/Dockerfile
           outputs: type=registry,dest=quay.io/akhilerm/test:5g,push=true,compression=uncompressed
           tags: quay.io/akhilerm/test:${{ matrix.id }}
 
