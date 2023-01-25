@@ -122,7 +122,7 @@ jobs:
           containerd_pid=$!
           sleep 5
 
-          mirror="ghcr.io/akhilerm/buildkit-actions-testing:${{ matrix.id }}"
+          mirror="ghcr.io/akhilerm/test:${{ matrix.id }}"
 
 
           echo "Mirroring "
